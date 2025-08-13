@@ -26,8 +26,8 @@ __global__ void bev_kernel(
 
     if (gx >= 0 && gx < width && gz >= 0 && gz < height) {
         // dilation: 반경 2픽셀(5x5 영역)에 걸쳐 색상 적용
-        for (int dx=-3; dx<=3; dx++) {
-            for (int dy=-3; dy<=3; dy++) {
+        for (int dx=-5; dx<=5; dx++) {
+            for (int dy=-5; dy<=5; dy++) {
                 int nx = gx + dx;
                 int ny = gz + dy;
                 if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
@@ -57,7 +57,7 @@ class BEVNode(Node):
         self.bridge = CvBridge()
 
         self.res = 0.005  # 2cm per pixel
-        self.width, self.height = 1200, 1200  # 0.8m x 0.8m
+        self.width, self.height = 1000, 1000  # 0.8m x 0.8m
 
         self.mod = SourceModule(KERNEL_CODE)
         self.kernel = self.mod.get_function("bev_kernel")
@@ -107,7 +107,7 @@ class BEVNode(Node):
         img_msg = self.bridge.cv2_to_imgmsg(bev, encoding="bgr8")
         self.pub.publish(img_msg)
 
-        self.get_logger().info(f"Published BEV image | Points: {num_points}")
+        self.get_logger().info(f"Published BEV image vvv | Points: {num_points}")
 
 def main(args=None):
     rclpy.init(args=args)
